@@ -1,19 +1,24 @@
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+// import java.util.ArrayList;
+// import java.util.Date;
+// import java.util.List;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 public class Cliente {
     private int id;
     private String nome;
     private String CPF;
-    //private Date DataNasc;
-    private List<Conta> contas = new ArrayList<>();
+    private LocalDate dataNasc;
+    //private List<Conta> contas = new ArrayList<>();
 
-    public Cliente(int id, String nome, String CPF) {
+    static DateTimeFormatter formatoBR = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+    public Cliente(int id, String nome, String CPF, String dataNasc) {
         this.id = id;
         this.nome = nome;
         this.CPF = CPF;
-        //this.DataNasc = DataNasc;
+        this.dataNasc = LocalDate.parse(dataNasc, formatoBR);
     }
 
     public String dados(){
@@ -22,7 +27,8 @@ public class Cliente {
         | ID CLIENTE: %d
         | NOME: %s
         | CPF: %s
-        """, this.id, this.nome, this.CPF);
+        | DATA DE NASCIMENTO: %s
+        """, this.id, this.nome, this.CPF, this.dataNasc.format(formatoBR));
     }
 
     public int getId() {

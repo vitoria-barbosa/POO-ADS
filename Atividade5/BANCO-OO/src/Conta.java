@@ -1,26 +1,31 @@
-import java.util.Date;
+//import java.util.Date;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 public class Conta {
     private int idConta;
     private String numero;
     private Cliente titular;
-    //private Date DataAbertura;
+    private LocalDate dataAbertura;
     private double saldo;
 
-    public Conta(int idConta, String numero, Cliente titular) {
+    static DateTimeFormatter formatoBR = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+    public Conta(int idConta, String numero, Cliente titular, String dataAbertura) {
         this.idConta = idConta;
         this.numero = numero;
         this.titular = titular;
-        //this.DataAbertura = DataAbertura;
-        this.saldo = 0;
+        this.dataAbertura = LocalDate.parse(dataAbertura, formatoBR);
+        this.saldo = 0.0;
     }
-
+    
     public void sacar(double valor){
         if (this.saldo >= valor && this.saldo > 0){
             this.saldo -= valor;
 
             System.out.println("Saque realizado com sucesso!");
-            System.out.printf("Saldo atualizado: R$ %.2f", this.saldo);
+            System.out.printf("Saldo atualizado: R$ %.2f\n", this.saldo);
         }
         else{
             System.out.println("Saldo insuficiente para fazer o saque!");
@@ -32,7 +37,7 @@ public class Conta {
             this.saldo += valor;
 
             System.out.println("Depósito realizado com sucesso!");
-            System.out.printf("Saldo atualizado: R$ %.2f", this.saldo);
+            System.out.printf("Saldo atualizado: R$ %.2f\n", this.saldo);
         }
     }
 
@@ -42,7 +47,7 @@ public class Conta {
             conta.depositar(valor);
                 
             System.out.println("Transferência realizada com sucesso!");
-            System.out.printf("Saldo atualizado: R$ %.2f", this.saldo);
+            System.out.printf("Saldo atualizado: R$ %.2f\n", this.saldo);
         }
         else{
             System.out.println("Saldo insuficiente para fazer a transferência!");
@@ -52,14 +57,14 @@ public class Conta {
     public void mostarInfo(){
     System.out.printf(
     """
-    ------- CONTA INFO -------
     | ID: %d
     | NÚMERO: %s
+    | DATA ABERTURA: %s
     | TITULAR:
     %s
     | SALDO: %.2f
     --------------------------
-    """, this.idConta, this.numero, this.titular.dados(), this.saldo);
+    """, this.idConta, this.numero, this.dataAbertura.format(formatoBR), this.titular.dados(), this.saldo);
     }
 
     public int getIdConta() {
