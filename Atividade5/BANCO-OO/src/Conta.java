@@ -63,7 +63,7 @@ public class Conta {
     | TITULAR:
     %s
     | SALDO: %.2f
-    --------------------------
+    ------------------------------------
     """, this.idConta, this.numero, this.dataAbertura.format(formatoBR), this.titular.dados(), this.saldo);
     }
 
@@ -93,5 +93,13 @@ public class Conta {
 
     public double getSaldo() {
         return this.saldo;
+    }
+
+    public LocalDate getDataAbertura() {
+        return this.dataAbertura;
+    }
+
+    public void setDataAbertura(LocalDate dataAbertura) {
+        this.dataAbertura = dataAbertura;
     }
 }

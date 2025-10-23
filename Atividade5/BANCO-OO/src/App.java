@@ -19,14 +19,15 @@ public class App {
         SUA OPÇÃO >>""";
         int opcao;
         Banco banco = new Banco();
+        
 
         do{
             Utils.esperar(1000);
-            opcao = Utils.receberInt(menu);
+            opcao = Utils.recebeInt(menu);
             Utils.limparBuffer();
 
             switch(opcao){
-                case 1: banco.adicionarConta();
+                case 1: banco.associarConta();
                 break;
                 case 2: banco.consultarPeloNumero();
                 break;
@@ -37,6 +38,8 @@ public class App {
                 case 5: banco.fazerSaque();
                 break;
                 case 6: banco.fazerTransferencia();
+                break;
+                case 7: banco.listarContasCliente();
                 break;
                 case 8: banco.excluirConta();
                 break;
