@@ -1,11 +1,10 @@
 package classes;
 
-import java.util.List;
-import static utils.Utils.*;
-/*
-CRUD - Create (inserir), Read (consultar), 
-Update (atualizar) e Delete (excluir)
-*/           
+import static utilitarios.Cadastro.*;
+import static utilitarios.Utils.*;
+import static utilitarios.EntradaDeDados.*;
+
+import java.util.List;           
 
 public class Banco {
     private List<Cliente> clientes = inicializarClientes();
@@ -13,25 +12,30 @@ public class Banco {
 
     // Inserir
     public void associarConta(){
-        Cliente cliente;
-        Conta conta;
+        Cliente cliente = null;
+        Conta conta = null;
         int opcao = recebeInt("Já é cliente do banco? (1-sim/2-não): ");
         limparBuffer();
 
         if(opcao == 1){
             String cpf = recebeStr("Digite seu CPF:");
             cliente = procurarPeloCPF(cpf);
-            System.out.println("\nCliente encontrado(a)!\n" + cliente.dados());
-            conta = criarConta(cliente);
+            if(cliente != null){
+                System.out.println("\nCliente encontrado(a)!\n" + cliente.dados());
+                conta = criarConta(cliente, this.contas);
+                
+            }else{
+                System.out.println("Cliente não encontrado.");
+            }
         }
         else{
-            cliente = cadastrarCliente();
-            conta = criarConta(cliente);
-            this.clientes.add(conta.getTitular());
+            cliente = cadastrarCliente(this.clientes);
+            conta = criarConta(cliente, this.contas);
+            this.clientes.add(cliente);
         }
         msgSucesso();
         this.contas.add(conta);
-        cliente.getContas().add(conta);
+        cliente.adicionarConta(conta);
     }
 
     // Consultar
@@ -144,6 +148,24 @@ public class Banco {
         else msgContaInexistente();
     }
 
+    public void somarSaldoContasCliente(){
+        double somaSaldo = 0;
+        String cpf = recebeStr("CPF: ");
+        Cliente cliente = procurarPeloCPF(cpf);
+
+        if(cliente != null){
+            for(Conta conta : cliente.getContas()){
+                somaSaldo += conta.getSaldo();
+                conta.mostarInfo();
+            }
+
+            System.out.printf("\nSaldo total de todas as contas do cliente %s: R$ %.2f", cliente.getNome(), somaSaldo);
+            return;
+        }
+
+        msgContaInexistente();
+    }
+
     public void listarContasCliente(){
         String cpf = recebeStr("CPF: ");
         Cliente cliente = procurarPeloCPF(cpf);
@@ -152,7 +174,9 @@ public class Banco {
             for(Conta conta : cliente.getContas()){
                 conta.mostarInfo();
             }
+            return;
         }
+        msgContaInexistente();
     }
 
     public void listarContas(){

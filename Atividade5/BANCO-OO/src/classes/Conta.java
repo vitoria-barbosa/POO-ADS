@@ -1,6 +1,7 @@
 package classes;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 public class Conta {
     private int idConta;
@@ -8,6 +9,8 @@ public class Conta {
     private Cliente titular;
     private LocalDate dataAbertura;
     private double saldo;
+
+    static DateTimeFormatter formatoBR = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     public Conta(int idConta, String numero, Cliente titular, LocalDate dataAbertura) {
         this.idConta = idConta;
@@ -61,7 +64,7 @@ public class Conta {
     %s
     | SALDO: %.2f
     ------------------------------------
-    """, this.idConta, this.numero, this.dataAbertura, this.titular.dados(), this.saldo);
+    """, this.idConta, this.numero, this.dataAbertura.format(formatoBR), this.titular.dados(), this.saldo);
     }
 
     public int getIdConta() {

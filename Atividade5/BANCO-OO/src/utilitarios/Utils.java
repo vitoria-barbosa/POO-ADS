@@ -1,10 +1,8 @@
-package utils;
+package utilitarios;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
-import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Locale;
 import java.util.Scanner;
@@ -16,45 +14,7 @@ public class Utils {
     static Scanner ler = new Scanner(System.in).useLocale(Locale.US);
     static DateTimeFormatter formatoBR = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-    public static int recebeInt(String texto){
-        try{
-            System.out.println(texto);
-            int valor = ler.nextInt();
-            return valor;
-        }catch(InputMismatchException e){
-            System.out.println("Entrada inválida, Digite um número inteiro.");
-            limparBuffer();
-            return recebeInt(texto);
-        }
-    }
-
-    public static double recebeValor(String texto){
-        try{
-            System.out.println(texto);
-            double valor = ler.nextDouble();
-            return valor;
-        }catch(InputMismatchException e){
-            System.out.println("Entrada inválida, Digite um número double.");
-            limparBuffer();
-            return recebeValor(texto);
-        }
-    }
-
-    public static String recebeStr(String texto){
-        System.out.println(texto);
-        return ler.nextLine();
-    }
-
-    public static LocalDate recebeData(String texto){
-        try{
-            System.out.println(texto);
-            String entrada = ler.nextLine();
-            return LocalDate.parse(entrada, formatoBR);
-        }catch(DateTimeParseException e){
-            System.out.println("Data inválida.");
-            return recebeData(texto);
-        }
-    }
+    
 
     public static void msgSucesso(){
         System.out.println("\nOperação bem sucedida!!\n");
@@ -118,24 +78,5 @@ public class Utils {
         }
 
         return contas;
-    }
-
-    public static Cliente cadastrarCliente(){
-        System.out.println(">>> CADASTRAR CLIENTE:\n");
-        int id = recebeInt("Id do Classes.Cliente:");
-        limparBuffer();
-        String nome = recebeStr("Nome:");
-        String cpf = recebeStr("CPF:");
-        LocalDate dataNasc = recebeData("Data de nascimento (DD/MM/AAAA): ");
-        return new Cliente(id, nome, cpf, dataNasc);
-    } 
-
-    public static Conta criarConta(Cliente cliente){
-        System.out.println(">>> CRIAR CONTA:\n");
-        int idConta = recebeInt("Id da conta:");
-        limparBuffer();
-        String numero = recebeStr("Número da conta:");
-        LocalDate dataAbertura = recebeData("Data de abertura (DD/MM/AAAA): ");
-        return new Conta(idConta, numero, cliente, dataAbertura);
     }
 }
