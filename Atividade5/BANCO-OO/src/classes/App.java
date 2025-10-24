@@ -1,3 +1,6 @@
+package classes;
+
+import static utils.Utils.*;
 public class App {
     public static void main(String[] args) throws Exception {
         String menu = 
@@ -19,12 +22,11 @@ public class App {
         SUA OPÇÃO >>""";
         int opcao;
         Banco banco = new Banco();
-        
 
         do{
-            Utils.esperar(1000);
-            opcao = Utils.recebeInt(menu);
-            Utils.limparBuffer();
+            esperar(2000);
+            opcao = recebeInt(menu);
+            limparBuffer();
 
             switch(opcao){
                 case 1: banco.associarConta();

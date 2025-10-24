@@ -1,7 +1,9 @@
+package classes;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
+
 public class Cliente {
     private int id;
     private String nome;
@@ -9,21 +11,11 @@ public class Cliente {
     private LocalDate dataNasc;
     private List<Conta> contas = new ArrayList<>();
 
-    static DateTimeFormatter formatoBR = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-
-    public Cliente(int id, String nome, String CPF, String dataNasc) {
+    public Cliente(int id, String nome, String CPF, LocalDate dataNasc) {
         this.id = id;
         this.nome = nome;
         this.CPF = CPF;
-        this.dataNasc = LocalDate.parse(dataNasc, formatoBR);
-    }
-
-    public Cliente(int id, String nome, String CPF, String dataNasc, Conta conta) {
-        this.id = id;
-        this.nome = nome;
-        this.CPF = CPF;
-        this.dataNasc = LocalDate.parse(dataNasc, formatoBR);
-        this.contas.add(conta);
+        this.dataNasc = dataNasc;
     }
 
     public String dados(){
@@ -33,7 +25,7 @@ public class Cliente {
         | NOME: %s
         | CPF: %s
         | DATA DE NASCIMENTO: %s
-        """, this.id, this.nome, this.CPF, this.dataNasc.format(formatoBR));
+        """, this.id, this.nome, this.CPF, this.dataNasc);
     }
 
     public void adicionarConta(Conta conta){

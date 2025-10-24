@@ -1,39 +1,42 @@
-/* 
-    CRUD - Create (inserir), Read (consultar), 
-           Update (atualizar) e Delete (excluir)
-*/           
+package classes;
+
 import java.util.List;
+import static utils.Utils.*;
+/*
+CRUD - Create (inserir), Read (consultar), 
+Update (atualizar) e Delete (excluir)
+*/           
 
 public class Banco {
-    private List<Cliente> clientes = Utils.inicializarClientes();
-    private List<Conta> contas = Utils.inicializarContas(clientes);
+    private List<Cliente> clientes = inicializarClientes();
+    private List<Conta> contas = inicializarContas(clientes);
 
     // Inserir
     public void associarConta(){
         Cliente cliente;
         Conta conta;
-        int opcao = Utils.recebeInt("Já é cliente do banco? (1-sim/2-não): ");
-        Utils.limparBuffer();
+        int opcao = recebeInt("Já é cliente do banco? (1-sim/2-não): ");
+        limparBuffer();
 
         if(opcao == 1){
-            String cpf = Utils.recebeStr("Digite seu CPF:");
+            String cpf = recebeStr("Digite seu CPF:");
             cliente = procurarPeloCPF(cpf);
             System.out.println("\nCliente encontrado(a)!\n" + cliente.dados());
-            conta = Utils.criarConta(cliente);
+            conta = criarConta(cliente);
         }
         else{
-            cliente = Utils.cadastrarCliente();
-            conta = Utils.criarConta(cliente);
+            cliente = cadastrarCliente();
+            conta = criarConta(cliente);
             this.clientes.add(conta.getTitular());
         }
-        System.out.println("\nConta criada com sucesso!\n");
+        msgSucesso();
         this.contas.add(conta);
         cliente.getContas().add(conta);
     }
 
     // Consultar
     public void consultarPeloNumero(){
-        String numero = Utils.recebeStr("Número da conta:");
+        String numero = recebeStr("Número da conta:");
 
         for(Conta conta : this.contas){
             if(numero.equals(conta.getNumero())){
@@ -42,7 +45,7 @@ public class Banco {
                 return;
             }
         }
-        System.out.println("Conta inexistente!");
+        msgContaInexistente();
     }
 
     public Cliente procurarPeloCPF(String cpf){
@@ -69,80 +72,80 @@ public class Banco {
 
     // atualizar
     public void atualizarNomeTitular(){
-        String numeroConta = Utils.recebeStr("Número da conta que quer atualizar:");
+        String numeroConta = recebeStr("Número da conta que quer atualizar:");
         Conta contaProcurada = procurarPeloNumero(numeroConta);
 
         if (contaProcurada != null) {
             System.out.println("Conta encontrada!\nDados do Titular:\n");
             Cliente clienteConta = contaProcurada.getTitular();
             System.out.println(clienteConta.dados());
-            String nome = Utils.recebeStr("-> Novo nome do titular:");
+            String nome = recebeStr("-> Novo nome do titular:");
             clienteConta.setNome(nome);
-            System.out.println("\nNome atualizado com sucesso!");
+            msgSucesso();
             return;
         }  
-        System.out.println("Conta não encontrada.");
+        msgContaInexistente();
     }
     
     // excluir
     public void excluirConta(){
-        String numeroConta = Utils.recebeStr("Número da conta que quer excluir:");
+        String numeroConta = recebeStr("Número da conta que quer excluir:");
         Conta contaProcurada = procurarPeloNumero(numeroConta);
 
         if(contaProcurada != null){
             this.contas.remove(contaProcurada);
             this.clientes.remove(contaProcurada.getTitular());
-            System.out.println("Conta excluida com sucesso!");
+            msgSucesso();
             return;
         }
-        System.out.println("Conta não encontrada.");
+        msgContaInexistente();
     }
 
     public void fazerSaque(){
-        String numeroConta = Utils.recebeStr("Número da conta:");
+        String numeroConta = recebeStr("Número da conta:");
         Conta contaProcurada = procurarPeloNumero(numeroConta);
 
         if(contaProcurada != null){
-            double valor = Utils.recebeValor("Valor do saque:");
+            double valor = recebeValor("Valor do saque:");
             contaProcurada.sacar(valor);
             return;
         }
-        System.out.println("Conta não encontrada.");
+        msgContaInexistente();
     }
 
     public void fazerDeposito(){
-        String numeroConta = Utils.recebeStr("Número da conta:");
+        String numeroConta = recebeStr("Número da conta:");
         Conta contaProcurada = procurarPeloNumero(numeroConta);
 
         if(contaProcurada != null){
-            contaProcurada.depositar( Utils.recebeValor("Valor do Depósito:"));
+            contaProcurada.depositar( recebeValor("Valor do Depósito:"));
             return;
         }
-        System.out.println("Conta não encontrada.");
+        msgContaInexistente();
     }
 
     public void fazerTransferencia(){
-        String numeroConta = Utils.recebeStr("Número da conta:");
+        String numeroConta = recebeStr("Número da conta:");
         Conta contaProcurada = procurarPeloNumero(numeroConta);
 
         if(contaProcurada != null){
-            Conta contaDestino = procurarPeloNumero( Utils.recebeStr("Número da conta que quer transferir:"));
+            Conta contaDestino = procurarPeloNumero(recebeStr("Número da conta que quer transferir:"));
             if(contaDestino != null){
-                double valor = Utils.recebeValor("Valor da tranferência:");
+                double valor = recebeValor("Valor da tranferência:");
                 if(valor <= contaProcurada.getSaldo()){
                     contaProcurada.sacar(valor);
                     contaDestino.depositar(valor);
-                    System.out.println("Transferência realizada com sucesso!");
+                    msgSucesso();
                 }
                 else System.out.println("Saldo Insuficiente.");
             }
             else System.out.println("Conta de destino não encontrada.");
         }
-        else System.out.println("Conta não encontrada.");
+        else msgContaInexistente();
     }
 
     public void listarContasCliente(){
-        String cpf = Utils.recebeStr("CPF: ");
+        String cpf = recebeStr("CPF: ");
         Cliente cliente = procurarPeloCPF(cpf);
 
         if(cliente != null){
@@ -155,7 +158,7 @@ public class Banco {
     public void listarContas(){
         System.out.println("------- CONTAS DO BANCO -------");
         for(Conta conta : this.contas){
-            Utils.esperar(2000);
+            esperar(2000);
             conta.mostarInfo();
         }
     }
@@ -163,7 +166,7 @@ public class Banco {
     public void listarClientes(){
         System.out.println("------- CLIENTES DO BANCO -------");
         for(Cliente cliente : this.clientes){
-            Utils.esperar(2000);
+            esperar(2000);
             System.out.println(cliente.dados());
             System.out.println();
         }
