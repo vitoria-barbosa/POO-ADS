@@ -42,19 +42,16 @@ public class Conta {
     }
 
     public void transferir(Conta conta, double valor){
-        if(this.saldo >= 0 && this.saldo > 0){
+        if(this.saldo > 0 && valor <= this.saldo){
             this.sacar(valor);
             conta.depositar(valor);
-                
-            System.out.println("Transferência realizada com sucesso!");
-            System.out.printf("Saldo atualizado: R$ %.2f\n", this.saldo);
         }
         else{
             System.out.println("Saldo insuficiente para fazer a transferência!");
         }
     }
 
-    public void mostarInfo(){
+    public void mostrarInfo(){
     System.out.printf(
     """
     | ID: %d
