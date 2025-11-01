@@ -24,7 +24,12 @@ public class Cadastro {
             return new Cliente(id, nome, cpf, dataNasc);
         }
 
-        System.out.println("Id ou CPF indisponível para uso. Tente novamente:");
+        if(!isCPFValido(cpf, clientes)){
+            System.out.println("CPF indisponível para uso.");
+        }
+        if(!isIdClienteValido(id, clientes)){
+            System.out.println("Id escolhido indisponível para uso.");
+        }
         return cadastrarCliente(clientes);
     } 
 
@@ -39,8 +44,13 @@ public class Cadastro {
         if (isIdContaValida(idConta, contas) && isNumContaValido(numero, contas)){
             return new Conta(idConta, numero, cliente, dataAbertura);
         }
-        
-        System.out.println("Id ou número indisponível para uso.Tente novamente:");
+
+        if(!isIdContaValida(idConta, contas)){
+            System.out.println("Id da conta indisponível para uso.");
+        }
+        if(!isNumContaValido(numero, contas)){
+            System.out.println("Número da conta indisponível para uso.");
+        }
         return criarConta(cliente, contas);
     }
 
@@ -73,7 +83,7 @@ public class Cadastro {
 
     public static boolean isNumContaValido(String numero, List<Conta> contas){
        for(Conta conta : contas){
-            if(conta.getNumero() == numero){
+            if(conta.getNumero().equals(numero)){
                 return false;
             }
         }

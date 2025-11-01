@@ -4,6 +4,7 @@ import static utilitarios.Cadastro.*;
 import static utilitarios.Utils.*;
 import static utilitarios.EntradaDeDados.*;
 
+import java.util.ArrayList;
 import java.util.List;           
 
 public class Banco {
@@ -26,6 +27,7 @@ public class Banco {
                 
             }else{
                 System.out.println("Cliente não encontrado.");
+                return;
             }
         }
         else{
@@ -45,7 +47,7 @@ public class Banco {
         for(Conta conta : this.contas){
             if(numero.equals(conta.getNumero())){
                 System.out.println("Conta encontrada!");
-                conta.mostarInfo();
+                conta.mostrarInfo();
                 return;
             }
         }
@@ -98,11 +100,29 @@ public class Banco {
 
         if(contaProcurada != null){
             this.contas.remove(contaProcurada);
-            this.clientes.remove(contaProcurada.getTitular());
+            Cliente cliente = contaProcurada.getTitular();
+            cliente.getContas().remove(contaProcurada);
             msgSucesso();
             return;
         }
         msgContaInexistente();
+    }
+
+    public void excluirCliente(){
+        String cpf = recebeStr("Digite seu CPF:");
+        Cliente cliente = procurarPeloCPF(cpf);
+
+        if(cliente != null){
+           
+            for(Conta conta : cliente.getContas()){
+                this.contas.remove(conta);
+            }
+
+            this.clientes.remove(cliente);
+            msgSucesso();
+            return;
+        }
+        System.out.println("Cliente não encontrado.");
     }
 
     public void fazerSaque(){
@@ -136,16 +156,88 @@ public class Banco {
             Conta contaDestino = procurarPeloNumero(recebeStr("Número da conta que quer transferir:"));
             if(contaDestino != null){
                 double valor = recebeValor("Valor da tranferência:");
-                if(valor <= contaProcurada.getSaldo()){
-                    contaProcurada.sacar(valor);
-                    contaDestino.depositar(valor);
-                    msgSucesso();
-                }
-                else System.out.println("Saldo Insuficiente.");
+                contaProcurada.transferir(contaDestino, valor);
+                msgSucesso();
             }
-            else System.out.println("Conta de destino não encontrada.");
+            else msgContaInexistente();
         }
         else msgContaInexistente();
+    }
+
+    public List<Conta> receberContasDestinoTranferencia(int qtdContas){
+        List<Conta> contasDestino = new ArrayList<>();
+
+        for(int i = 0; i < qtdContas; i++){
+            String numeroConta = recebeStr("Número da conta:");
+            Conta contaProcurada = procurarPeloNumero(numeroConta);
+
+            while(contaProcurada == null){
+                System.out.println("\nConta não encontrada. Tente novamente:");
+                numeroConta = recebeStr("Número da conta:");
+                contaProcurada = procurarPeloNumero(numeroConta);
+            }
+
+            contasDestino.add(contaProcurada);
+        }
+
+        return contasDestino;
+    }
+
+    public void TransferenciaVariasContas(){
+        String numeroConta = recebeStr("Número da conta:");
+        Conta contaProcurada = procurarPeloNumero(numeroConta);
+
+        if(contaProcurada != null){
+            int qtdContas = recebeInt("Quantidade de contas que quer tranferir:");
+            limparBuffer();
+            List<Conta> contasDestino = receberContasDestinoTranferencia(qtdContas);
+
+            for(Conta conta : contasDestino){
+                if(contaProcurada.getSaldo() == 0){
+                    System.out.println("\nSaldo insuficiente para continuar as tranferências.");
+                    return;
+                }
+
+                double valor = recebeValor("Valor da transferência para conta " + conta.getNumero() + ":");
+
+                while(valor > contaProcurada.getSaldo()){
+                    System.out.println("Valor acima do saldo. Tente novamente:");
+                    valor = recebeValor("Valor da transferência para conta " + conta.getNumero() + ":");
+
+                }
+                contaProcurada.transferir(conta, valor);
+            }
+            msgSucesso();
+            return;
+        }
+        msgContaInexistente();
+    }
+
+    public void mudarTitularidade(){
+        String numeroConta = recebeStr("Número da conta:");
+        Conta contaProcurada = procurarPeloNumero(numeroConta);
+
+        if(contaProcurada != null){
+            String cpf = recebeStr("Digite o CPF do novo titular:");
+            Cliente clienteNovo = procurarPeloCPF(cpf);
+
+            if(clienteNovo == null){       // novo titular não é cliente do banco
+                System.out.println("Cliente não cadastrado. Fazer cadastro: ");
+                clienteNovo = cadastrarCliente(this.clientes);
+                this.clientes.add(clienteNovo);
+            }
+            
+            Cliente clienteAntigo = contaProcurada.getTitular();
+            clienteAntigo.getContas().remove(contaProcurada);
+
+            contaProcurada.setTitular(clienteNovo);
+            clienteNovo.adicionarConta(contaProcurada);
+            msgSucesso();
+        }
+        else{
+            msgContaInexistente();
+        }
+
     }
 
     public void somarSaldoContasCliente(){
@@ -156,7 +248,7 @@ public class Banco {
         if(cliente != null){
             for(Conta conta : cliente.getContas()){
                 somaSaldo += conta.getSaldo();
-                conta.mostarInfo();
+                conta.mostrarInfo();
             }
 
             System.out.printf("\nSaldo total de todas as contas do cliente %s: R$ %.2f", cliente.getNome(), somaSaldo);
@@ -166,13 +258,40 @@ public class Banco {
         msgContaInexistente();
     }
 
+    public void mostrarQtdContas(){
+        System.out.printf("\n> QUANTIDADE DE CONTAS DO BANCO: %d", this.contas.size());
+    }
+
+    public double somarSaldoContasBanco(){
+        double saldoTotal = 0;
+
+        for (Conta conta : this.contas){
+            saldoTotal += conta.getSaldo();
+        }
+
+        return saldoTotal;
+    }
+
+    public void mostrarSaldoTotalContasBanco(){
+        System.out.printf("\n> SALDO TOTAL DE TODAS AS CONTAS DO BANCO: %.2f", somarSaldoContasBanco());
+
+    }
+
+    public void mostrarMediaSaldoContasBanco(){
+        double saldoTotal = somarSaldoContasBanco();
+        double mediaSaldo = saldoTotal / this.contas.size();
+
+        System.out.printf("> MÉDIA DO SALDO DAS CONTAS DO BANCO: %.2f", mediaSaldo);
+    }
+
     public void listarContasCliente(){
         String cpf = recebeStr("CPF: ");
         Cliente cliente = procurarPeloCPF(cpf);
 
         if(cliente != null){
+            System.out.printf("---- CONTAS DO(A) CLIENTE %s ----\n", cliente.getNome().toUpperCase());
             for(Conta conta : cliente.getContas()){
-                conta.mostarInfo();
+                conta.mostrarInfo();
             }
             return;
         }
@@ -182,15 +301,15 @@ public class Banco {
     public void listarContas(){
         System.out.println("------- CONTAS DO BANCO -------");
         for(Conta conta : this.contas){
-            esperar(2000);
-            conta.mostarInfo();
+            esperar(1800);
+            conta.mostrarInfo();
         }
     }
 
     public void listarClientes(){
         System.out.println("------- CLIENTES DO BANCO -------");
         for(Cliente cliente : this.clientes){
-            esperar(2000);
+            esperar(1800);
             System.out.println(cliente.dados());
             System.out.println();
         }

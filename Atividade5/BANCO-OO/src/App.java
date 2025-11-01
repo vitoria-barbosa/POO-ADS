@@ -19,6 +19,12 @@ public class App {
         09 - LISTAR CONTAS DO BANCO
         10 - LISTAR CLIENTES DO BANCO
         11 - SOMAR SALDO CONTAS CLIENTE
+        12 - QUANTIDADE DE CONTAS DO BANCO
+        13 - SALDO TOTAL CONTAS BANCO
+        14 - MÉDIA DO SALDO DAS CONTAS DO BANCO
+        15 - MUDAR TITULARIDADE DE CONTA
+        16 - EXCLUIR CLIENTE
+        17 - TRANSFERIR PARA VÁRIAS CONTAS
         00 - SAIR
 
         SUA OPÇÃO >>""";
@@ -26,7 +32,7 @@ public class App {
         Banco banco = new Banco();
 
         do{
-            esperar(2000);
+            esperar(1800);
             opcao = recebeInt(menu);
             limparBuffer();
 
@@ -52,6 +58,18 @@ public class App {
                 case 10: banco.listarClientes();
                 break;
                 case 11: banco.somarSaldoContasCliente();
+                break;
+                case 12: banco.mostrarQtdContas();
+                break;
+                case 13: banco.mostrarSaldoTotalContasBanco();
+                break;
+                case 14: banco.mostrarMediaSaldoContasBanco();
+                break;
+                case 15: banco.mudarTitularidade();
+                break;
+                case 16: banco.excluirCliente();
+                break;
+                case 17: banco.TransferenciaVariasContas();
                 break;
             }
 
