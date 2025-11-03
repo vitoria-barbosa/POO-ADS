@@ -1,75 +1,44 @@
 package utilitarios;
 
-import static utilitarios.Utils.*;
 import static utilitarios.EntradaDeDados.*;
-
-import java.time.LocalDate;
-import java.util.List;
-
 import classes.Cliente;
 import classes.Conta;
 
+import java.time.LocalDate;
+import java.util.List;
 public class Cadastro {
 
-    public static Cliente cadastrarCliente(List<Cliente> clientes){
+    public static Cliente cadastrarCliente(List<Cliente> clientes){        
         System.out.println("\n>>> CADASTRAR CLIENTE:\n");
 
-        int id = recebeInt("Id do Cliente:");
-        limparBuffer();
+        int ultimoId = clientes.getLast().getId();
+        int idCliente = ultimoId+1;
         String nome = recebeStr("Nome:");
         String cpf = recebeStr("CPF:");
         LocalDate dataNasc = recebeData("Data de nascimento (DD/MM/AAAA): ");
 
-        if( isCPFValido(cpf, clientes) && isIdClienteValido(id, clientes)){
-            return new Cliente(id, nome, cpf, dataNasc);
+        if(isCPFValido(cpf, clientes)){
+            return new Cliente(idCliente, nome, cpf, dataNasc);
         }
 
-        if(!isCPFValido(cpf, clientes)){
-            System.out.println("CPF indisponível para uso.");
-        }
-        if(!isIdClienteValido(id, clientes)){
-            System.out.println("Id escolhido indisponível para uso.");
-        }
+        System.out.println("Já existe um cliente com esse CPF. Tente novamente:");
         return cadastrarCliente(clientes);
     } 
 
     public static Conta criarConta(Cliente cliente, List<Conta> contas){
         System.out.println("\n>>> CRIAR CONTA:\n");
 
-        int idConta = recebeInt("Id da conta:");
-        limparBuffer();
+        int ultimoId = contas.getLast().getIdConta();
+        int idConta = ultimoId+1;
         String numero = recebeStr("Número da conta:");
         LocalDate dataAbertura = recebeData("Data de abertura (DD/MM/AAAA): ");
 
-        if (isIdContaValida(idConta, contas) && isNumContaValido(numero, contas)){
+        if(isNumContaValido(numero, contas)){
             return new Conta(idConta, numero, cliente, dataAbertura);
         }
 
-        if(!isIdContaValida(idConta, contas)){
-            System.out.println("Id da conta indisponível para uso.");
-        }
-        if(!isNumContaValido(numero, contas)){
-            System.out.println("Número da conta indisponível para uso.");
-        }
+        System.out.println("Número da conta indisponível para uso. Tente novamente:");
         return criarConta(cliente, contas);
-    }
-
-    public static boolean isIdClienteValido(int id, List<Cliente> clientes){
-        for(Cliente cliente : clientes){
-            if(cliente.getId() == id){
-                return false;
-            }
-        }
-        return true;
-    }
-
-    public static boolean isIdContaValida(int id, List<Conta> contas){
-        for(Conta conta : contas){
-            if(conta.getIdConta() == id){
-                return false;
-            }
-        }
-        return true;
     }
 
     public static boolean isCPFValido(String cpf, List<Cliente> clientes){
@@ -90,5 +59,3 @@ public class Cadastro {
         return true; 
     }
 }
-
-
