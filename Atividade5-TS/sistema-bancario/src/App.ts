@@ -1,0 +1,101 @@
+import Banco from "./classes/Banco";
+import prompt from "prompt-sync";
+import { receberNumero } from "./utilidades/Utils";
+
+class App {
+  public menu() {
+    let input = prompt();
+    let opcao: Number;
+    const banco: Banco = new Banco();
+    const menu: string = `\n\n\n
+  =========== BANCO ===========
+  CONTAS:
+  01 - CRIAR CONTA
+  02 - CONSULTAR 
+  03 - DEPOSITAR
+  04 - SACAR
+  05 - FAZER TRANSFERÊNCIA
+  06 - REALIZAR ORDEM BANCÁRIA
+  07 - TRANSFERIR TITULARIDADE
+  08 - EXCLUIR
+
+  CLIENTES:
+  20 - CADASTRAR CLIENTE
+  21 - CONSULTAR
+  22 - TOTAL APLICADO POR CLIENTE
+  23 - LISTAR CONTAS
+  24 - EXCLUIR CLIENTE
+
+  BANCO:
+  30 - LISTAR CONTAS
+  31 - LISTAR CLIENTES
+  32 - MÉDIA SALDO DEPOSITADO
+
+  00 - SAIR
+
+  OPÇÃO >> `;
+
+    do {
+      opcao = receberNumero(menu);
+
+      switch (opcao) {
+        case 1:
+          banco.associarContaCliente();
+          break;
+        case 2:
+          banco.consultarConta();
+          break;
+        case 3:
+          banco.fazerDeposito();
+          break;
+        case 4:
+          banco.fazerSaque();
+          break;
+        case 5:
+          banco.fazerTransferencia();
+          break;
+        case 6:
+          banco.realizarOrdemBancaria();
+          break;
+        case 7:
+          banco.transferirTitularidade();
+          break;
+        case 8:
+          banco.excluirConta();
+          break;
+        case 20:
+          banco.cadastrarCliente();
+          break;
+        case 21:
+          banco.consultarCliente();
+          break;
+        case 22:
+          banco.totalAplicadoCliente();
+          break;
+        case 23:
+          banco.listarContasCliente();
+          break;
+        case 24:
+          banco.excluirCliente();
+          break;
+        case 30:
+          banco.listarContasBanco();
+          break;
+        case 31:
+          banco.listarClientesBanco();
+          break;
+        case 32:
+          banco.mediaSaldoContasBanco();
+          break;
+        case 0:
+          console.log("Saindo...");
+          break;
+        default:
+          console.log("Opção inválida!");
+      }
+    } while (opcao != 0);
+  }
+}
+
+const app: App = new App();
+app.menu();
