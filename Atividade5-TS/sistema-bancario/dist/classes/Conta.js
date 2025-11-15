@@ -16,13 +16,13 @@ class Conta {
     sacar(valor) {
         if (valor > 0) {
             this._saldo -= valor;
-            console.log(`Saldo atualizado: R$ ${this._saldo.toFixed()}`);
+            console.log(`Saldo atualizado após o saque: R$ ${this._saldo.toFixed(2)}`);
         }
     }
     depositar(valor) {
         if (valor > 0) {
             this._saldo += valor;
-            console.log(`Saldo atualizado: R$ ${this._saldo.toFixed()}`);
+            console.log(`Saldo atualizado após o depósito: R$ ${this._saldo.toFixed(2)}`);
         }
     }
     consultarSaldo() {
